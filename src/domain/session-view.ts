@@ -1,0 +1,21 @@
+import type { CodexUsage } from "./codex-usage";
+import type { AgentConnection } from "./agent-connection";
+import type { ListedModel } from "./listed-model";
+import type { SessionItem, SessionTurnStatus } from "./session-item";
+export type PublicCodexSession = {
+	readonly usage?: CodexUsage;
+	readonly snapshotAvailable: boolean;
+	readonly workspaceId: string | null;
+	readonly agentSessionId: string | null;
+	readonly selectedBranch?: string | null;
+	readonly connection: AgentConnection;
+	readonly models: readonly ListedModel[];
+	readonly listedModelId: string;
+	readonly blockedListedModelIds: readonly string[];
+	readonly canSend: boolean;
+	readonly canSendSide: boolean;
+	readonly turnStatus: SessionTurnStatus;
+	readonly items: readonly SessionItem[];
+	readonly sideTurnStatus: SessionTurnStatus;
+	readonly sideItems: readonly SessionItem[];
+};
