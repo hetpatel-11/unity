@@ -9,7 +9,7 @@ export class UnityService {
 	private timers = new Map<string, ReturnType<typeof setTimeout>>();
 	private aborts = new Map<string, AbortController>();
 	private activityReports = new Map<string,{at:number;text:string}>();
-	
+
 	private supervisorQueue: Promise<void> = Promise.resolve();
 	constructor(
 		readonly store: RoomStore,
