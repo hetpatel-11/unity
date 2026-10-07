@@ -1,0 +1,25 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import type {MessageStreamEvent} from 'eve/client';
+import {initialRoom} from './store';
+import {projectEveEvent} from './eve-events';
+test('Eve tool lifecycle and streamed text reuse the original timeline item identities',()=>{
+ const room=initialRoom('live');
+ const emit=(event:unknown)=>projectEveEvent(room,event as MessageStreamEvent);
+ emit({type:'action.input.appended',data:{callId:'call1',toolName:'delegate_task',inputTextDelta:'{"goal":'}});
+ assert.equal(room.supervisorTools[0].status,'inProgress');
+ emit({type:'actions.requested',data:{actions:[{kind:'tool-call',callId:'call1',toolName:'delegate_task',input:{goal:'Add keyboard access',threadId:'one',apiKey:'secret-key'}}]}});
+ assert.match(room.supervisorTools[0].input,/Add keyboard access/);
+ assert.ok(!room.supervisorTools[0].input.includes('secret-key'));
+ emit({type:'action.result',data:{status:'completed',result:{kind:'tool-result',callId:'call1',toolName:'delegate_task',output:{delivery:'queued'}}}});
+ assert.equal(room.supervisorTools.length,1);
+ assert.equal(room.supervisorTools[0].status,'completed');
+ assert.match(room.supervisorTools[0].output,/queued/);
+ emit({type:'message.appended',data:{turnId:'turn1',stepIndex:1,messageDelta:'Sent '}});
+ emit({type:'message.appended',data:{turnId:'turn1',stepIndex:1,messageDelta:'the brief.'}});
+ assert.equal(room.messages[0].streaming,true);
+ emit({type:'message.completed',data:{turnId:'turn1',stepIndex:1,message:'Sent the brief.'}});
+ assert.equal(room.messages.length,1);
+ assert.equal(room.messages[0].text,'Sent the brief.');
+ assert.equal(room.messages[0].streaming,false);
+});

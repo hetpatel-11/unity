@@ -1,0 +1,14 @@
+node_modules
+.git
+.unity
+.eve
+.output
+.vercel
+.env
+.env.*
+dist
+*.log
+.agents
+.claude
+.github/skills
+skills-lock.json

@@ -4,6 +4,12 @@ import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
+	server: {
+		proxy: {
+			"/api": "http://127.0.0.1:4318",
+			"/health": "http://127.0.0.1:4318",
+		},
+	},
 	resolve: {
 		alias: {
 			"#": fileURLToPath(new URL("./src", import.meta.url)),

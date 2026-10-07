@@ -1,17 +1,13 @@
 # Unity stack
 
-Selected hosting platform: InstaCloud.
+- React/Vite: light interface, original ytimesy UI components, Unity activation and crew views.
+- Node HTTP API: live SSE, atomic persisted room state, worker streams and control, private Eve tool routes.
+- Agent37 Cloud APIs: independently sessioned Codex workers on the user's signed-in instance.
+- Vercel Eve: a persistent Unity supervisor using custom tools to inspect and control those chats.
+- InstaCloud: one application container with a persistent volume for room state and, when configured, Eve workflow state.
 
-- React/Vite: the existing Unity frontend.
-- InstaCloud compute: the planned Unity HTTP API and captain event processor, serving the built frontend from the same application.
-- InstaCloud managed Postgres: planned conversation history, agent events, agent state, pending decisions, and message routing records.
-- Agent37 Cloud API: coding-agent execution environments. Required by the hackathon eligibility rules supplied by the user.
-- OpenAI: captain inference for briefings and routing user instructions.
+Local live mode uses Eve's supported local ChatGPT connection. Deployed live mode requires a separately provisioned model API key. The hosted presentation defaults to clearly labeled simulated mode; it is separate from the locally verified real Agent37/Eve sessions.
 
-Planned flow: Agent37-hosted coding agent emits a turn event → Unity API stores it → captain produces a briefing → API streams the briefing to the unified conversation → user replies → captain routes the instruction to the intended agent.
+Flow: Codex completes a turn → Unity saves the transcript → Eve inspects the worker and briefs the user → user answers Unity → Eve routes the instruction into that worker's retained Codex session.
 
-Current state: frontend preview only. No backend, database, InstaCloud project, provider connection, or deployed service has been created.
-
-InstaCloud's setup guide excludes static frontends whose only backend lives elsewhere. Deploy Unity once its own API exists. Use a single application container and managed Postgres. Account sign-in and project binding will be needed for deployment.
-
-Official setup: https://instacloud.com/prompt.md
+There is no database requirement in this prototype: a single API process owns the atomic JSON store. Horizontal scaling and stronger crash delivery semantics are future work.
